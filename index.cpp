@@ -1,9 +1,10 @@
 #include<bangtal.h>
 #include <stdio.h> 
 
-SceneID scene1, scene2, scene3, scene4, scene5;
+SceneID scene0, scene1, scene2, scene3;
 
 ObjectID problem1, problem2, problem3;
+ObjectID startButton, endButton, playButton;
 
 ObjectID left[5];
 ObjectID right[5];
@@ -19,8 +20,24 @@ bool checkIn(int x, int y, int cx, int cy, int r) {
 	return (x > cx - r && x < cx + r && y > cy - r && y < cy + r);
 }
 
+void startGame() {
+	hideObject(startButton);
+	hideObject(endButton);
+
+	showObject(problem1);
+	enterScene(scene1);
+
+	startTimer(timer1);
+}
+
 void mouseCallback(ObjectID object, int x, int y, MouseAction action) {
-	if (object == problem1) {
+	if (object == endButton) {
+		endGame();
+	}
+	else if (object == startButton) {
+		startGame();
+	}
+	else if (object == problem1) {
 		if (c1) {
 			enterScene(scene2);
 		}
@@ -74,13 +91,22 @@ int main() {
 	setMouseCallback(mouseCallback);
 	setTimerCallback(timerCallback);
 
+	scene0 = createScene("틀린그림찾기1", "images/part1.jpg");
 	scene1 = createScene("틀린그림찾기1", "");
 	scene2 = createScene("틀린그림찾기2", "");
 	scene3 = createScene("틀린그림찾기3", "");
 
+
+	startButton = createObject("images/start.png");
+	locateObject(startButton, scene0, 590, 300);
+	showObject(startButton);
+
+	endButton = createObject("images/end.png");
+	locateObject(endButton, scene0, 590, 250);
+	showObject(endButton);
+
 	problem1 = createObject("images/part1.jpg");
 	locateObject(problem1, scene1, 0, 0);
-	showObject(problem1); //169 226  472 226
 
 	left[0] = createObject("images/check.png");
 	locateObject(left[0], scene1, leftX[0] - radius[0], Y[0] - radius[0]);
@@ -107,16 +133,10 @@ int main() {
 	right[2] = createObject("images/check.png");
 	locateObject(right[2], scene3, rightX[2] - radius[2], Y[2] - radius[2]);
 
-	 /*problem2 = createScene("images/part2.jpg");
-	locateObject(problem2, scene2, 0, 0); // 22 336 130
-	showObject(problem2); */
-
 	showMessage("좌우에 틀린 곳을 찾아보세요");
-
 
 	timer1 = createTimer(30.0f);
 	showTimer(timer1);
-	startTimer(timer1);
 
-	startGame(scene1);
+	startGame(scene0);
 }
